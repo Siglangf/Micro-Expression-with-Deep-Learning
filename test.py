@@ -26,66 +26,66 @@ img_float = img.copy().astype('float')
 
 # Number of channels
 if len(img_float.shape) == 3:
-  num_chan = img_float.shape[2]
+	num_chan = img_float.shape[2]
 else:
   # If there is a single channel, make the images 3D with a singleton
   # dimension to allow for loop to work properly
-  num_chan = 1
-  img_float = img_float[:,:,None]
-  filtered = filtered[:,:,None]
+	num_chan = 1
+	img_float = img_float[:,:,None]
+	filtered = filtered[:,:,None]
 
 # For each pixel in the input...
 for y in range(height):
-  for x in range(width):
+	for x in range(width):
 
 	# If distance transform is 0, skip
-	if out[y,x] == 0.0:
-	  continue
+		if out[y,x] == 0.0:
+			continue
 
 	# Calculate M = d / S
-	mask_val = np.ceil(out[y,x] / scale_factor)
+		mask_val = np.ceil(out[y,x] / scale_factor)
 
 	# If M is too small, set the mask size to the smallest possible value
-	if mask_val <= 3:
-	  mask_val = 3
+		if mask_val <= 3:
+			mask_val = 3
 
 	# Get beginning and ending x and y coordinates for neighbourhood
 	# and ensure they are within bounds
-	beginx = x-int(mask_val/2)
-	if beginx < 0:
-	  beginx = 0
+		beginx = x-int(mask_val/2)
+		if beginx < 0:
+			beginx = 0
 
-	beginy = y-int(mask_val/2)
-	if beginy < 0:
-	  beginy = 0
+		beginy = y-int(mask_val/2)
+		if beginy < 0:
+			beginy = 0
 
-	endx = x+int(mask_val/2)
-	if endx >= width:
-	  endx = width-1
+		endx = x+int(mask_val/2)
+		if endx >= width:
+			endx = width-1
 
-	endy = y+int(mask_val/2)
-	if endy >= height:
-	  endy = height-1
+		endy = y+int(mask_val/2)
+		if endy >= height:
+			endy = height-1
 
 	# Get the coordinates of where we need to grab pixels
-	xvals = np.arange(beginx, endx+1)
-	yvals = np.arange(beginy, endy+1)
-	(col_neigh,row_neigh) = np.meshgrid(xvals, yvals)
-	col_neigh = col_neigh.astype('int')
-	row_neigh = row_neigh.astype('int')
+		xvals = np.arange(beginx, endx+1)
+		yvals = np.arange(beginy, endy+1)
+		(col_neigh,row_neigh) = np.meshgrid(xvals, yvals)
+		col_neigh = col_neigh.astype('int')
+		row_neigh = row_neigh.astype('int')
 
 	# Get the pixels now
 	# For each channel, do the foveation
 	for ii in range(num_chan):
-	  chan = img_float[:,:,ii]
-	  pix = chan[row_neigh, col_neigh].ravel()
+		chan = img_float[:,:,ii]
+		pix = chan[row_neigh, col_neigh].ravel()
 
 	  # Calculate the average and set it to be the output
-	  filtered[y,x,ii] = int(np.mean(pix))
+		filtered[y,x,ii] = int(np.mean(pix))
 
 # Remove singleton dimension if required for display and saving
 if num_chan == 1:
-  filtered = filtered[:,:,0]
+	filtered = filtered[:,:,0]
 
 # Show the image
 cv2.imshow('Output', filtered)

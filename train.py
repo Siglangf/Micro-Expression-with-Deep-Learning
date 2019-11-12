@@ -51,7 +51,7 @@ from keras import backend as K
 
 def train(batch_size, spatial_epochs, temporal_epochs, train_id, list_dB, spatial_size, flag, objective_flag, tensorboard):
 	############## Path Preparation ######################
-	root_db_path = "/media/ice/OS/Datasets/"
+	root_db_path = "/Users/sigurd/Desktop/MicroExpressions/Micro-Expression-with-Deep-Learning/Datasets/"
 	tensorboard_path = root_db_path + "tensorboard/"
 	if os.path.isdir(root_db_path + 'Weights/'+ str(train_id) ) == False:
 		os.mkdir(root_db_path + 'Weights/'+ str(train_id) )
@@ -174,7 +174,7 @@ def train(batch_size, spatial_epochs, temporal_epochs, train_id, list_dB, spatia
 
 
 	########### Model Configurations #######################
-	K.set_image_dim_ordering('th')
+	K.tensorflow_backend.set_image_data_format('channels_first')
 	sgd = optimizers.SGD(lr=0.0001, decay=1e-7, momentum=0.9, nesterov=True)
 	adam = optimizers.Adam(lr=0.00001, decay=0.000001)
 
@@ -200,7 +200,7 @@ def train(batch_size, spatial_epochs, temporal_epochs, train_id, list_dB, spatia
 
 	for sub in range(subjects):
 		print(".starting subject" + str(sub))
-		gpu_observer()
+		#gpu_observer()
 		spatial_weights_name = root_db_path + 'Weights/'+ str(train_id) + '/vgg_spatial_'+ str(train_id) + '_' + str(dB) + '_'
 		spatial_weights_name_strain = root_db_path + 'Weights/' + str(train_id) + '/vgg_spatial_strain_'+ str(train_id) + '_' + str(dB) + '_' 
 		spatial_weights_name_gray = root_db_path + 'Weights/' + str(train_id) + '/vgg_spatial_gray_'+ str(train_id) + '_' + str(dB) + '_'
@@ -317,7 +317,7 @@ def train(batch_size, spatial_epochs, temporal_epochs, train_id, list_dB, spatia
 			_, _, _, _, _, Train_X_Gray, Train_Y_Gray, Test_X_Gray, Test_Y_Gray = restructure_data(sub, SubperdB_gray, labelperSub, subjects, n_exp, r, w, timesteps_TIM, 3)
 
 		############### check gpu resources ####################
-		gpu_observer()
+		#gpu_observer() #does not work on mac
 		########################################################
 
 		print("Beginning training & testing.")
